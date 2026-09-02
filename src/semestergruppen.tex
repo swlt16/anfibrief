@@ -1,6 +1,58 @@
+% Die Links werden in config.tex angepasst
+% Hier muss idR nichts geändert werden.
+
 \ifkogwiss
     % FSK
-    here goes kogni stuff
+    Die erste beruhigende Information: Du bist nicht allein! Es fangen noch viele andere Studierende dieses Semester im \abschluss{} \studiengang an.
+    Für das Kennenlernen bieten wir als Fachschaft euch eine Reihe von verschiedensten Veranstaltungen an, die ihr mit Terminen auf den Folgeseiten findet.
+    Darüber hinaus möchten wir euch mit einer Semestergruppe die Möglichkeit bieten, auch per Chat in direkten Kontakt miteinander zu treten.
+    Dafür nutzen wir WhatsApp. Auch einige von uns FachschaftlerInnen sind dort erreichbar. Ihr könnt der Gruppe über den nachstehenden QR-Code beitreten:
+
+    \begin{center}
+        \ifmaster
+            % Master
+            {
+                \color{green}
+                \qrcode[height=45mm]{\GruppeKogniMaster} \\
+            }
+            \vspace*{0.3cm}
+            {
+                \footnotesize
+                Kogni Master \ifsommersemester SoSe \else WiSe \fi \YEAR \\
+                \url{\GruppeKogniMaster}
+            }
+        \else
+            % Bachelor
+            % TODO QR-Codes und Links austauschen!
+            {
+                \color{green}
+                \qrcode[height=45mm]{\GruppeKogniBachelor} \\
+            }
+            \vspace*{0.3cm}
+            {
+                \footnotesize
+                Kogni Bachelor \ifsommersemester SoSe \else WiSe \fi \YEAR \\
+                \url{\GruppeKogniBachelor}
+            }
+        \fi
+    \end{center}
+
+    % Kognis nutzen WhatsApp :')
+    %Falls ihr euch fragt: \glqq Warum nicht WhatsApp?\grqq. Ganz einfach: Wir als Informatik-Fachschaft sehen es als Teil unserer Aufgabe, für digitale Souveränität einzutreten. 
+    %Daher möchten wir in keinster Weise politisch und sicherheitstechnisch fragwürdige Plattformen wie WhatsApp bzw. Meta unterstützen.
+    %Signal dagegen ist gemeinnützig, werbefrei und finanziert sich überwiegend durch Spenden statt durch die Auswertung von Nutzerdaten. Außerdem ist es Open Source Software.
+
+    An dieser Stelle möchten wir außerdem einen kurzen Warnhinweis zur Plattform \textit{ersti-gruppen.de} aussprechen.
+    Es tauchen immer wieder Hinweise dazu auf, dass die Betreiber dieser Plattform die dort gelisteten Gruppen auch zur Verbreitung von eigenen, kommerziellen Inhalten nutzen; teilweise werden auch WhatsApp-Business-Accounts und Chatbots verwendet.
+    Wir möchten daher mit der oben verlinkten Gruppe eine sichere und werbefreie Alternative bieten. Mit \textit{ersti-gruppen.de} stehen wir in keinster Weise in Verbindung.
+
+    \begin{center}
+        \includegraphics[height=60mm, keepaspectratio=true]{media/xkcd_chats.png} \\
+        {
+            \tiny
+            Quelle: \href{https://xkcd.com/1810}{xkcd.com}, Comic \#1810
+        }
+    \end{center}
 \else
     % FSI
     \ifml
@@ -12,11 +64,15 @@
 
         \begin{center}
             % ML immer Master
-            % TODO QR-Codes und Links austauschen!
-            \includegraphics[width=45mm, keepaspectratio=true]{media/qrcode-signal-master.png} \\
+            {
+                \color{navy}
+                \qrcode[height=45mm]{\GruppeInfoMaster} \\
+            }
+            \vspace*{0.3cm}
             {
                 \footnotesize
-                \url{https://signal.group/#CjQKIFU_UY-EbSNNTeC0jUDBYAi2b2ZpU0_CFWYxo4KtET9VEhB04WXy9gsxr-TiGa1xJLbi}
+                Computer Science Master \ifsommersemester Summer Term \else Winter Term \fi \YEAR \\
+                \url{\GruppeInfoMaster}
             }
         \end{center}
 
@@ -45,19 +101,27 @@
         \begin{center}
             \ifmaster
                 % Master
-                % TODO QR-Codes und Links austauschen!
-                \includegraphics[width=45mm, keepaspectratio=true]{media/qrcode-signal-master.png} \\
+                {
+                    \color{navy}
+                    \qrcode[height=45mm]{\GruppeInfoMaster} \\
+                }
+                \vspace*{0.3cm}
                 {
                     \footnotesize
-                    \url{https://signal.group/#CjQKIFU_UY-EbSNNTeC0jUDBYAi2b2ZpU0_CFWYxo4KtET9VEhB04WXy9gsxr-TiGa1xJLbi}
+                    *-Informatik Master \ifsommersemester SoSe \else WiSe \fi \YEAR \\
+                    \url{\GruppeInfoMaster}
                 }
             \else
                 % Bachelor
-                % TODO QR-Codes und Links austauschen!
-                \includegraphics[width=45mm, keepaspectratio=true]{media/qrcode-signal-bachelor.png} \\
+                {
+                    \color{navy}
+                    \qrcode[height=45mm]{\GruppeInfoBachelor} \\
+                }
+                \vspace*{0.3cm}
                 {
                     \footnotesize
-                    \url{https://signal.group/#CjQKIBLZvMV75ifvTGG_lyhAHPVtlq3CTLZ6DYeLSuBirhL5EhD59M8ZZaM-7_r_7EI_ym9Q}
+                    *-Informatik Bachelor \ifsommersemester SoSe \else WiSe \fi \YEAR \\
+                    \url{\GruppeInfoBachelor}
                 }
             \fi
         \end{center}
