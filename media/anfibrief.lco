@@ -11,6 +11,7 @@
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{fontawesome5} % Icons in Adresskopf
+\usepackage{qrcode} % QR-Codes für Gruppenlinks
 \renewcommand{\familydefault}{\sfdefault}
 
 \usepackage{geometry}
