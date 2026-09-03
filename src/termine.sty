@@ -1,0 +1,85 @@
+% Custom Package für Terminverwaltung im Erstibrief
+% damit man nicht immer manuelles Layouting machen muss und ständig die Übersicht in der
+% ver...ickten Termindatei verliert. Das ist echt verdammt nervig.
+% Für FSI-Historiker: Haben wir im WiSe26/27 geändert.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{src/termine}[2026/09/03 Anfi-Termine]
+
+\RequirePackage{expl3}
+\RequirePackage{xparse}
+
+\ExplSyntaxOn
+
+\seq_new:N \g__anf_termine_seq
+\prop_new:N \l__anf_termin_prop
+
+\keys_define:nn { anf / termin }
+  {
+    title-de    .code:n = \prop_put:Nnn \l__anf_termin_prop { title-de } {#1},
+    title-en    .code:n = \prop_put:Nnn \l__anf_termin_prop { title-en } {#1},
+    date-de     .code:n = \prop_put:Nnn \l__anf_termin_prop { date-de } {#1},
+    date-en     .code:n = \prop_put:Nnn \l__anf_termin_prop { date-en } {#1},
+    time-de     .code:n = \prop_put:Nnn \l__anf_termin_prop { time-de } {#1},
+    time-en     .code:n = \prop_put:Nnn \l__anf_termin_prop { time-en } {#1},
+    location-de .code:n = \prop_put:Nnn \l__anf_termin_prop { location-de } {#1},
+    location-en .code:n = \prop_put:Nnn \l__anf_termin_prop { location-en } {#1},
+    body-de     .code:n = \prop_put:Nnn \l__anf_termin_prop { body-de } {#1},
+    body-en     .code:n = \prop_put:Nnn \l__anf_termin_prop { body-en } {#1},
+  }
+
+\cs_new:Npn \__anf_termin_value:nn #1#2
+  {
+    \prop_if_in:NnTF \l__anf_termin_prop { #1-#2 }
+      { \prop_item:Nn \l__anf_termin_prop { #1-#2 } }
+      { \prop_item:Nn \l__anf_termin_prop { #1-de } }
+  }
+
+\cs_new_protected:Npn \__anf_termin_label:n #1
+  {
+    \__anf_termin_value:nn { title } {#1}
+    \tl_if_blank:eF { \__anf_termin_value:nn { date } {#1} }
+      { ~--~\__anf_termin_value:nn { date } {#1} }
+    \tl_if_blank:eF { \__anf_termin_value:nn { time } {#1} }
+      { ,~\__anf_termin_value:nn { time } {#1} }
+    \tl_if_blank:eF { \__anf_termin_value:nn { location } {#1} }
+      { ,~\__anf_termin_value:nn { location } {#1} }
+  }
+
+\cs_new_protected:Npn \__anf_termin_render:nn #1#2
+  {
+    \prop_clear:N \l__anf_termin_prop
+    \prop_put:Nnn \l__anf_termin_prop { date-de } { }
+    \prop_put:Nnn \l__anf_termin_prop { time-de } { }
+    \prop_put:Nnn \l__anf_termin_prop { location-de } { }
+    \keys_set:nn { anf / termin } {#2}
+
+    % eigentliches Layouting
+    \par\penalty0\smallskip
+    \begin{samepage}
+      \noindent\textbf{\__anf_termin_label:n {#1}}\par\nobreak
+      \group_begin:
+        \leftskip=2em
+        \noindent\__anf_termin_value:nn { body } {#1}\par
+      \group_end:
+    \end{samepage}
+  }
+
+\NewDocumentCommand \DeclareTermin { +m }
+  {
+    \seq_gput_right:Nn \g__anf_termine_seq {#1}
+  }
+
+\cs_new_protected:Npn \__anf_termine_print:n #1
+  {
+    \seq_map_inline:Nn \g__anf_termine_seq
+      { \__anf_termin_render:nn {#1} {##1} }
+  }
+
+\NewDocumentCommand \PrintTermineDe { }
+  { \__anf_termine_print:n { de } }
+
+\NewDocumentCommand \PrintTermineEn { }
+  { \__anf_termine_print:n { en } }
+
+\ExplSyntaxOff
