@@ -8,11 +8,16 @@
 
 \RequirePackage{expl3}
 \RequirePackage{xparse}
+\RequirePackage{array}
+\RequirePackage{colortbl}
+\RequirePackage{pgfcalendar}
+\RequirePackage{xcolor}
 
 \ExplSyntaxOn
 
 \seq_new:N \g__anf_termine_seq
 \prop_new:N \l__anf_termin_prop
+\clist_new:N \l__anf_termin_dates_clist
 \msg_new:nnn { anf / termin } { missing-date } { 'date'~field~is~missing.~You~need~a~sort~key! }
 
 \keys_define:nn { anf / termin }
@@ -77,9 +82,12 @@
     \__anf_termin_prop_set:n {#1}
     \prop_get:NnNTF \l__anf_termin_prop { date } \l_tmpa_tl
       {
+        \clist_set:NV \l__anf_termin_dates_clist \l_tmpa_tl
+        \tl_set:Nx \l_tmpb_tl
+          { \clist_item:Nn \l__anf_termin_dates_clist {1} }
         \seq_gput_right:Nx \g__anf_termine_seq
           {
-            { \exp_not:V \l_tmpa_tl }
+            {\exp_not:V \l_tmpb_tl}
             { \exp_not:n {#1} }
           }
       }
@@ -116,5 +124,241 @@
 
 \NewDocumentCommand \PrintTermineEn { }
   { \__anf_termine_print:n { en } }
+
+% Ab hier beginnt der Code für den grafischen Monatskalender.
+
+\tl_new:N \l__anf_calendar_start_tl
+\tl_new:N \l__anf_calendar_end_tl
+\tl_new:N \l__anf_calendar_year_tl
+\tl_new:N \l__anf_calendar_month_tl
+\tl_new:N \l__anf_calendar_day_tl
+\tl_new:N \l__anf_calendar_heading_year_tl
+\tl_new:N \l__anf_calendar_heading_month_tl
+\tl_new:N \l__anf_calendar_cell_date_tl
+\tl_new:N \l__anf_calendar_body_tl
+\tl_new:N \l__anf_calendar_titles_tl
+\prop_new:N \l__anf_calendar_titles_prop
+\int_new:N \l__anf_calendar_start_julian_int
+\int_new:N \l__anf_calendar_end_julian_int
+\int_new:N \l__anf_calendar_cell_int
+\dim_new:N \l__anf_calendar_column_width_dim
+
+\keys_define:nn { anf / calendar }
+  {
+    start .tl_set:N = \l__anf_calendar_start_tl,
+    end   .tl_set:N = \l__anf_calendar_end_tl,
+  }
+
+\cs_new_protected:Npn \__anf_calendar_event:n #1
+  {
+    \par\noindent
+    \group_begin:
+      \setlength{\fboxsep}{1pt}
+      \colorbox{black!7}
+        {
+          \parbox{\dim_eval:n { \linewidth - 2\fboxsep }}
+            {
+              \tiny
+              \raggedright
+              \hyphenpenalty=50
+              \exhyphenpenalty=50
+              \strut\hspace{0pt}#1\strut\par
+            }
+        }
+    \group_end:
+    \par\vspace{1pt}
+  }
+
+\cs_new_protected:Npn \__anf_calendar_collect_record:nnn #1#2#3
+  {
+    \__anf_termin_prop_set:n {#3}
+    \prop_get:NnNTF \l__anf_termin_prop { title-#1 } \l_tmpb_tl
+      { }
+      { \prop_get:NnN \l__anf_termin_prop { title-de } \l_tmpb_tl }
+    \prop_get:NnN \l__anf_termin_prop { date } \l_tmpa_tl
+    \clist_set:NV \l__anf_termin_dates_clist \l_tmpa_tl
+    \clist_map_inline:Nn \l__anf_termin_dates_clist
+      {
+        \tl_set:Nx \l_tmpa_tl { \str_range:nnn {##1} {1} {10} }
+        \prop_get:NVNTF
+          \l__anf_calendar_titles_prop \l_tmpa_tl \l__anf_calendar_titles_tl
+          {
+            \tl_put_right:Nx \l__anf_calendar_titles_tl
+              {
+                \exp_not:N \__anf_calendar_event:n
+                  { \exp_not:V \l_tmpb_tl }
+              }
+          }
+          {
+            \tl_set:Nx \l__anf_calendar_titles_tl
+              {
+                \exp_not:N \__anf_calendar_event:n
+                  { \exp_not:V \l_tmpb_tl }
+              }
+          }
+        \prop_put:NVV
+          \l__anf_calendar_titles_prop \l_tmpa_tl \l__anf_calendar_titles_tl
+      }
+  }
+
+\cs_new_protected:Npn \__anf_calendar_collect_titles:n #1
+  {
+    \prop_clear:N \l__anf_calendar_titles_prop
+    \seq_map_inline:Nn \g__anf_termine_seq
+      { \__anf_calendar_collect_record:nnn {#1} ##1 }
+  }
+
+\cs_new_protected:Npn \__anf_calendar_cell:nn #1#2
+  {
+    \group_begin:
+      \begin{minipage}[t][1.8cm][t]{\linewidth}
+        \setlength{\parindent}{0pt}
+        \setlength{\parskip}{0pt}
+        \footnotesize
+        \textbf{#2}\par
+        \scriptsize
+        \prop_get:NnNT
+          \l__anf_calendar_titles_prop
+          {#1}
+          \l__anf_calendar_titles_tl
+          {
+            \noindent\ignorespaces
+            \tl_use:N \l__anf_calendar_titles_tl
+            \par
+          }
+      \end{minipage}
+    \group_end:
+  }
+
+\cs_new_protected:Npn \__anf_calendar_build_body:
+  {
+    \pgfcalendardatetojulian
+      { \l__anf_calendar_start_tl }
+      { \l__anf_calendar_start_julian_int }
+    \pgfcalendardatetojulian
+      { \l__anf_calendar_end_tl }
+      { \l__anf_calendar_end_julian_int }
+    \int_zero:N \l__anf_calendar_cell_int
+    \tl_clear:N \l__anf_calendar_body_tl
+    \int_step_inline:nnnn
+      { \l__anf_calendar_start_julian_int }
+      {1}
+      { \l__anf_calendar_end_julian_int }
+      {
+        \int_incr:N \l__anf_calendar_cell_int
+        \pgfcalendarjuliantodate {##1}
+          { \l__anf_calendar_year_tl }
+          { \l__anf_calendar_month_tl }
+          { \l__anf_calendar_day_tl }
+        \tl_set:Nx \l__anf_calendar_cell_date_tl
+          {
+            \l__anf_calendar_year_tl
+            -\l__anf_calendar_month_tl
+            -\l__anf_calendar_day_tl
+          }
+        % Die zweite Kalenderwoche liegt immer im dargestellten Monat.
+        \int_compare:nNnT { \l__anf_calendar_cell_int } = {8}
+          {
+            \tl_set_eq:NN
+              \l__anf_calendar_heading_year_tl
+              \l__anf_calendar_year_tl
+            \tl_set_eq:NN
+              \l__anf_calendar_heading_month_tl
+              \l__anf_calendar_month_tl
+          }
+        \tl_put_right:Nx \l__anf_calendar_body_tl
+          {
+            \exp_not:N \__anf_calendar_cell:nn
+              { \exp_not:V \l__anf_calendar_cell_date_tl }
+              { \int_eval:n { \l__anf_calendar_day_tl } }
+          }
+        \int_compare:nNnTF
+          { \int_mod:nn { \l__anf_calendar_cell_int } {7} }
+          =
+          {0}
+          { \tl_put_right:Nn \l__anf_calendar_body_tl { \\\hline } }
+          { \tl_put_right:Nn \l__anf_calendar_body_tl { & } }
+      }
+  }
+
+\cs_new:Npn \__anf_calendar_month_name:nn #1#2
+  {
+    \str_if_eq:nnTF {#1} {de}
+      {
+        \int_case:nn {#2}
+          {
+            { 4 } {April}
+            { 10 } {Oktober}
+          }
+      }
+      {
+        \int_case:nn {#2}
+          {
+            { 4 } {April}
+            { 10 } {October}
+          }
+      }
+  }
+
+\cs_new_protected:Npn \__anf_calendar_header:n #1
+  {
+    \str_if_eq:nnTF {#1} {de}
+      {
+        \makebox[\linewidth][c]{Mo} &
+        \makebox[\linewidth][c]{Di} &
+        \makebox[\linewidth][c]{Mi} &
+        \makebox[\linewidth][c]{Do} &
+        \makebox[\linewidth][c]{Fr} &
+        \makebox[\linewidth][c]{Sa} &
+        \makebox[\linewidth][c]{So} \\\hline
+      }
+      {
+        \makebox[\linewidth][c]{Mon} &
+        \makebox[\linewidth][c]{Tue} &
+        \makebox[\linewidth][c]{Wed} &
+        \makebox[\linewidth][c]{Thu} &
+        \makebox[\linewidth][c]{Fri} &
+        \makebox[\linewidth][c]{Sat} &
+        \makebox[\linewidth][c]{Sun} \\\hline
+      }
+  }
+
+\cs_new_protected:Npn \__anf_calendar_print:nn #1#2
+  {
+    \group_begin:
+      \keys_set:ne { anf / calendar } {#2}
+      \__anf_termine_sort:
+      \__anf_calendar_collect_titles:n {#1}
+      \__anf_calendar_build_body:
+      \par\smallskip\noindent
+      \setlength{\tabcolsep}{2pt}
+      \renewcommand{\arraystretch}{1}
+      \dim_set:Nn \l__anf_calendar_column_width_dim
+        { (\linewidth - 14\tabcolsep - 8\arrayrulewidth) / 7 }
+      \begin{tabular}
+        {*{7}{|>{\raggedright\arraybackslash}p{\l__anf_calendar_column_width_dim}}|}
+        \hline
+        \multicolumn{7}{|c|}
+          {
+            \cellcolor{anfibriefaccent}
+            \color{white}\bfseries
+            \__anf_calendar_month_name:nn
+              {#1}
+              { \l__anf_calendar_heading_month_tl }
+            \c_space_tl \l__anf_calendar_heading_year_tl
+          }
+          \\\hline
+        \__anf_calendar_header:n {#1}
+        \tl_use:N \l__anf_calendar_body_tl
+      \end{tabular}
+      \par\smallskip
+    \group_end:
+  }
+
+\NewDocumentCommand \PrintMonatskalenderDe { m }
+  { \__anf_calendar_print:nn { de } {#1} }
+
+\NewDocumentCommand \PrintMonatskalenderEn { m }
+  { \__anf_calendar_print:nn { en } {#1} }
 
 \ExplSyntaxOff

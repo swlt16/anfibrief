@@ -152,8 +152,10 @@ Ein Termin wird innerhalb dieser Bedingungen so definiert:
 }
 ```
 
-`date` wird im Format `YYYY-MM-DD hh:mm:ss` angegeben, wird aber nur zur Sortierung 
-genutzt, `date-de` bzw. `date-en` werden ausgegeben. 
+`date` wird als einzelner Zeitstempel im Format `YYYY-MM-DD hh:mm:ss` oder als
+kommaseparierte Liste solcher Zeitstempel angegeben. Der erste Eintrag bestimmt die
+Sortierung; im Monatskalender erscheint der Termin an jedem angegebenen Datum.
+`date-de` bzw. `date-en` werden in der Terminliste ausgegeben.
 Die Felder `date-de`, `time-de` und `location-de` können weggelassen werden. 
 Alle englischen Felder sind optional und nutzen die deutschen als Fallback. `\PrintTermineDe` und
 `\PrintTermineEn` geben dieselben Termine in der jeweiligen Sprache aus.
