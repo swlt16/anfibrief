@@ -1,7 +1,19 @@
+% Zentrale Terminverwaltung
+% ASCII-Art generiert mit: https://patorjk.com/software/taag
+% 'date' wird als Sortierschlüssel genutzt, die Reihenfolge in diesem File ist also völlig egal. 
+
+%  __     __         _                        
+%  \ \   / /__  _ __| | ___   _ _ __ ___  ___ 
+%   \ \ / / _ \| '__| |/ / | | | '__/ __|/ _ \
+%    \ V / (_) | |  |   <| |_| | |  \__ \  __/
+%     \_/ \___/|_|  |_|\_\\__,_|_|  |___/\___|
+%
+
 % Kogni-Mathe-Vorkurs
 \ifkogwiss
   \ifmaster
     \DeclareTermin{
+      date = {2026-10-05 09:00:00},
       title-de = {Mathevorkurs-Master},
       date-de = {\kogniMasterMatheVorkursBeginn~bis \kogniMasterMatheVorkursEnde~\YEAR},
       time-de = {09:00--17:00 Uhr},
@@ -21,6 +33,7 @@
 \ifmaster
   \ifbinfo
     \DeclareTermin{
+      date = {2026-09-28 00:00:00},
       title-de = {Informatikvorkurs},
       date-de = {ab \bioinfoDatum~\YEAR},
       body-de = {
@@ -44,6 +57,7 @@
       \iflehramt
       \else
         \DeclareTermin{
+          date = {2026-10-01 00:00:00},
           title-de = {Mathevorkurs},
           date-de = {ab \mathedatum~\YEAR},
           body-de = {
@@ -59,10 +73,10 @@
       \fi
     \fi
   \fi
-\fi
-
-\ifbachelor
+\else
+  % Bachelor
   \DeclareTermin{
+    date = {2026-10-01 00:00:00},
     title-de = {Mathevorkurs},
     date-de = {ab \mathedatum~\YEAR},
     body-de = {
@@ -77,48 +91,17 @@
   }
 \fi
 
-% Grillen 1
-\DeclareTermin{
-  title-de = {Grillen 1},                 title-en = {BBQ 1},
-  date-de = {Dienstag, 31. März \YEAR},   date-en = {Tuesday, March 31st \YEAR},
-  time-de = {18:30 Uhr},                  time-en = {18:30},
-  location-de = {im Garten des Sandes},   location-en = {in the garden of the Sand},
-  body-de = {
-    Du hast keinen Bock auf Kochen? Dann bist du hier genau richtig! In geselliger Runde wird die Fachschaft mit dir grillen.
-    Bring dazu mit, was auch immer du zum Grillen brauchst, ein großer Gasgrill wartet auf dich. Vergiss bitte auch nicht, dein eigenes Besteck und Geschirr einzupacken!\\
-    Auf dem Sand ist es auch möglich Volleyball, Fußball, usw. zu spielen. Wir freuen uns auf dich!\\
-    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
-  },
-  body-en = {
-    You're not in the mood for cooking this evening? Fear not!
-    The student council invites you for a BBQ. Bring whatever you want to put on the grill,
-    please also bring your own plates and cutlery. The garden has enough space for stuff like volleyball, football etc. as well.\\
-    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
-  }
-}
-
-% Spieleabend 1
-\DeclareTermin{
-  title-de = {Spieleabend 1},             title-en = {Board Game Night 1},
-  date-de = {Mittwoch, 1. April \YEAR},   date-en = {Wednesday, April 1st \YEAR},
-  location-de = {Sand},                   location-en = {Sand},
-  body-de = {
-    Wir möchten dich zu einem kleinen Analog-Spieleabend mit guter Gesellschaft und entspannter Atmosphäre auf dem Sand einladen.
-    Für einige Spiele sowie Getränke und Knabberkram (gegen einen kleinen Obolus) sorgt die Fachschaft.
-    Wir freuen uns natürlich sehr, wenn du auch eigene Spiele mitbringst, obwohl unsere Sammlung schon beachtlich ist!\\
-    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
-  },
-  body-en = {
-    We'd like to invite you to a board game night in relaxed atmosphere at the Sand.
-    We'll provide some games as well as drinks and snacks (for a small donation).
-    Even though our collection is growing steadily, we're more than happy if you bring along your own games!\\
-    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
-  }
-}
+%   _____          _     _                   _      _     
+%  |  ___|_ _  ___| |__ | |__   ___ _ __ ___(_) ___| |__  
+%  | |_ / _` |/ __| '_ \| '_ \ / _ \ '__/ _ \ |/ __| '_ \ 
+%  |  _| (_| | (__| | | | |_) |  __/ | |  __/ | (__| | | |
+%  |_|  \__,_|\___|_| |_|_.__/ \___|_|  \___|_|\___|_| |_|
+%                                    
 
 % Mastercafe
 \ifmaster
   \DeclareTermin{
+    date = {2026-04-09 14:30:00},
     title-de = {Mastercafé},                  title-en = {Mastercafé},
     date-de = {Donnerstag, 9. April \YEAR},   date-en = {Thursday, April 9th \YEAR},
     time-de = {14:30 Uhr},                    time-en = {14:30},
@@ -137,32 +120,10 @@
   }
 \fi
 
-% Fruehstueck
-\DeclareTermin{
-  title-de = {Frühstück},               title-en = {Breakfast},
-  date-de = {Freitag, 10. April \YEAR}, date-en = {Friday, April 10th \YEAR},
-  time-de = {10:00 Uhr},                time-en = {10:00},
-  location-de = {Mensa Morgenstelle},   location-en = {Sand},
-  body-de = {
-    Wir laden dich an diesem Morgen zu einem gemütlichen Frühstück ein!
-    Dabei erfährst du einiges über die Uni, die Fachschaft und was dich in den nächsten Monaten
-    erwartet – auch im Gespräch mit älteren Studenten. Direkt im Anschluss kannst du dann noch
-    zur offizielle Erstsemesterbegrüßung des Fachbereichs Informatik. Wir haben extra genug Zeit eingeplant.
-    Um besser planen und Plätze reservieren zu können, bitten wir euch Bescheid zu geben, wenn ihr kommt. \\
-    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
-  },
-  body-en = {
-    We invite you to a cozy breakfast this morning! During this time, you'll learn a lot
-    about the university, the student council, and what to expect in the coming months—also
-    through conversations with senior students. Right after, you can attend the official introductory event
-    for first-year students in the Department of Computer Science. We've set aside enough time for this.
-    To plan better and reserve spots, we kindly ask you to let us know if you're coming. \\
-    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
-  }
-}
-
 % Facheinfuehrung
 \DeclareTermin{
+  % Sortierwert; der tatsaechliche Termin ist studiengangsabhaengig.
+  date = {2026-04-10 12:00:00},
   title-de = {Facheinführung},  title-en = {Subject Introduction},
   body-de = {
     Fächerspezifische Einführungsveranstaltung, in der du wichtige Informationen zum Studienverlauf erhältst. Den Termin für dein Fach findest du am besten auf \url{https://uni-tuebingen.de/de/197597}.
@@ -176,6 +137,7 @@
 
 % Semestereroeffnung
 \DeclareTermin{
+  date = {2026-04-10 16:00:00},
   title-de = {Semestereröffnung Fachbereich},   title-en = {Semester Opening by Faculty},
   date-de = {Freitag, 10. April \YEAR},         date-en = {Friday, April 10th \YEAR},
   time-de = {16:00 Uhr},                        time-en = {16:00},
@@ -200,8 +162,82 @@
   }
 }
 
+% Erste Vorlesung
+\ifbachelor
+  \DeclareTermin{
+    date = {2026-04-13 08:00:00},
+    title-de = {Erste Vorlesung},
+    date-de = {Montag, 13. April \YEAR},
+    time-de = {\ifwintersemester 8:00 Uhr\else 10:00 Uhr\fi},
+    location-de = {Morgenstelle},
+    body-de = {
+      Deine erste Vorlesung beginnt um
+      \ifwintersemester 8:00 Uhr -- Du hast „Mathematik für Informatik 1“ \fi
+      \ifsommersemester 10:00 Uhr -- Du hast „Mathematik für Informatik 2“ \fi
+      bei \Matheprof.
+      Alles, was du heute (und in Zukunft) benötigst: persönlichen Wachmacher, einen Stift, einen Block und den Studierendenausweis.\\
+      \seticon{faBus}~\textbf{Bushaltestelle:} BG Unfallklinik (Linien 5, 13, 14, 17, 18, 19, X15)
+    }
+  }
+\fi
+
+%   _____ ____ ___           _____ ____  _  __
+%  |  ___/ ___|_ _|    _    |  ___/ ___|| |/ /
+%  | |_  \___ \| |   _| |_  | |_  \___ \| ' / 
+%  |  _|  ___) | |  |_   _| |  _|  ___) | . \ 
+%  |_|   |____/___|   |_|   |_|   |____/|_|\_\
+%                                  
+
+
+% Fruehstueck
+\DeclareTermin{
+  date = {2026-04-10 10:00:00},
+  title-de = {Frühstück},               title-en = {Breakfast},
+  date-de = {Freitag, 10. April \YEAR}, date-en = {Friday, April 10th \YEAR},
+  time-de = {10:00 Uhr},                time-en = {10:00},
+  location-de = {Mensa Morgenstelle},   location-en = {Sand},
+  body-de = {
+    Wir laden dich an diesem Morgen zu einem gemütlichen Frühstück ein!
+    Dabei erfährst du einiges über die Uni, die Fachschaft und was dich in den nächsten Monaten
+    erwartet – auch im Gespräch mit älteren Studenten. Direkt im Anschluss kannst du dann noch
+    zur offizielle Erstsemesterbegrüßung des Fachbereichs Informatik. Wir haben extra genug Zeit eingeplant.
+    Um besser planen und Plätze reservieren zu können, bitten wir euch Bescheid zu geben, wenn ihr kommt. \\
+    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
+  },
+  body-en = {
+    We invite you to a cozy breakfast this morning! During this time, you'll learn a lot
+    about the university, the student council, and what to expect in the coming months—also
+    through conversations with senior students. Right after, you can attend the official introductory event
+    for first-year students in the Department of Computer Science. We've set aside enough time for this.
+    To plan better and reserve spots, we kindly ask you to let us know if you're coming. \\
+    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
+  }
+}
+
+% Grillen 1
+\DeclareTermin{
+  date = {2026-03-31 18:30:00},
+  title-de = {Grillen 1},                 title-en = {BBQ 1},
+  date-de = {Dienstag, 31. März \YEAR},   date-en = {Tuesday, March 31st \YEAR},
+  time-de = {18:30 Uhr},                  time-en = {18:30},
+  location-de = {im Garten des Sandes},   location-en = {in the garden of the Sand},
+  body-de = {
+    Du hast keinen Bock auf Kochen? Dann bist du hier genau richtig! In geselliger Runde wird die Fachschaft mit dir grillen.
+    Bring dazu mit, was auch immer du zum Grillen brauchst, ein großer Gasgrill wartet auf dich. Vergiss bitte auch nicht, dein eigenes Besteck und Geschirr einzupacken!\\
+    Auf dem Sand ist es auch möglich Volleyball, Fußball, usw. zu spielen. Wir freuen uns auf dich!\\
+    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
+  },
+  body-en = {
+    You're not in the mood for cooking this evening? Fear not!
+    The student council invites you for a BBQ. Bring whatever you want to put on the grill,
+    please also bring your own plates and cutlery. The garden has enough space for stuff like volleyball, football etc. as well.\\
+    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
+  }
+}
+
 % Grillen 2
 \DeclareTermin{
+  date = {2026-04-10 18:30:00},
   title-de = {Grillen 2},                 title-en = {BBQ 2},
   date-de = {Freitag, 10. April \YEAR},   date-en = {Friday, April 10th \YEAR},
   time-de = {18:30 Uhr},                  time-en = {18:30},
@@ -220,8 +256,49 @@
   }
 }
 
+% Spieleabend 1
+\DeclareTermin{
+  date = {2026-04-01 00:00:00},
+  title-de = {Spieleabend 1},             title-en = {Board Game Night 1},
+  date-de = {Mittwoch, 1. April \YEAR},   date-en = {Wednesday, April 1st \YEAR},
+  location-de = {Sand},                   location-en = {Sand},
+  body-de = {
+    Wir möchten dich zu einem kleinen Analog-Spieleabend mit guter Gesellschaft und entspannter Atmosphäre auf dem Sand einladen.
+    Für einige Spiele sowie Getränke und Knabberkram (gegen einen kleinen Obolus) sorgt die Fachschaft.
+    Wir freuen uns natürlich sehr, wenn du auch eigene Spiele mitbringst, obwohl unsere Sammlung schon beachtlich ist!\\
+    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
+  },
+  body-en = {
+    We'd like to invite you to a board game night in relaxed atmosphere at the Sand.
+    We'll provide some games as well as drinks and snacks (for a small donation).
+    Even though our collection is growing steadily, we're more than happy if you bring along your own games!\\
+    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
+  }
+}
+
+% Spieleabend 2
+\DeclareTermin{
+  date = {2026-04-14 00:00:00},
+  title-de = {Spieleabend 2},               title-en = {Board Game Night 2},
+  date-de = {Dienstag, 14. April \YEAR},    date-en = {Tuesday, April 14th \YEAR},
+  location-de = {Sand},                     location-en = {Sand},
+  body-de = {
+    Wir möchten dich zu einem kleinen Analog-Spieleabend mit guter Gesellschaft und entspannter Atmosphäre auf dem Sand einladen.
+    Für einige Spiele sowie Getränke und Knabberkram (gegen einen kleinen Obolus) sorgt die Fachschaft.
+    Wir freuen uns natürlich sehr, wenn du auch eigene Spiele mitbringst, obwohl unsere Sammlung schon beachtlich ist!\\
+    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
+  },
+  body-en = {
+    We'd like to invite you to a board game night in relaxed atmosphere at the Sand.
+    We'll provide some games as well as drinks and snacks (for a small donation).
+    Even though our collection is growing steadily, we're more than happy if you bring along your own games!\\
+    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
+  }
+}
+
 % Wanderung 1
 \DeclareTermin{
+  date = {2026-04-11 10:30:00},
   title-de = {Wanderung 1},                 title-en = {Hike 1},
   date-de = {Samstag, 11. April \YEAR},     date-en = {Saturday, April 11th \YEAR},
   time-de = {10:30 Uhr},                    time-en = {10:30},
@@ -240,65 +317,9 @@
   }
 }
 
-% Erste Vorlesung
-\ifbachelor
-  \DeclareTermin{
-    title-de = {Erste Vorlesung},
-    date-de = {Montag, 13. April \YEAR},
-    time-de = {\ifwintersemester 8:00 Uhr\else 10:00 Uhr\fi},
-    location-de = {Morgenstelle},
-    body-de = {
-      Deine erste Vorlesung beginnt um
-      \ifwintersemester 8:00 Uhr -- Du hast „Mathematik für Informatik 1“ \fi
-      \ifsommersemester 10:00 Uhr -- Du hast „Mathematik für Informatik 2“ \fi
-      bei \Matheprof.
-      Alles, was du heute (und in Zukunft) benötigst: persönlichen Wachmacher, einen Stift, einen Block und den Studierendenausweis.\\
-      \seticon{faBus}~\textbf{Bushaltestelle:} BG Unfallklinik (Linien 5, 13, 14, 17, 18, 19, X15)
-    }
-  }
-\fi
-
-% Spieleabend 2, TODO: Uhrzeit
-\DeclareTermin{
-  title-de = {Spieleabend 2},               title-en = {Board Game Night 2},
-  date-de = {Dienstag, 14. April \YEAR},    date-en = {Tuesday, April 14th \YEAR},
-  location-de = {Sand},                     location-en = {Sand},
-  body-de = {
-    Wir möchten dich zu einem kleinen Analog-Spieleabend mit guter Gesellschaft und entspannter Atmosphäre auf dem Sand einladen.
-    Für einige Spiele sowie Getränke und Knabberkram (gegen einen kleinen Obolus) sorgt die Fachschaft.
-    Wir freuen uns natürlich sehr, wenn du auch eigene Spiele mitbringst, obwohl unsere Sammlung schon beachtlich ist!\\
-    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
-  },
-  body-en = {
-    We'd like to invite you to a board game night in relaxed atmosphere at the Sand.
-    We'll provide some games as well as drinks and snacks (for a small donation).
-    Even though our collection is growing steadily, we're more than happy if you bring along your own games!\\
-    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
-  }
-}
-
-% Kneipentour
-\DeclareTermin{
-  title-de = {Kneipentour},                   title-en = {Pub Crawl},
-  date-de = {Freitag, 17. April \YEAR},       date-en = {Friday, April 17th \YEAR},
-  body-de = {
-    Tübingen ist übersät mit kleinen Kneipen und Bars, die das Nachtleben maßgeblich bestimmen.
-    Um den Stress der ersten Veranstaltungen etwas sacken zu lassen, laden wir dich zu einer ausgiebigen Kneipentour ein,
-    bei der wir in Kleingruppen die verschiedenen Lokalitäten der Tübinger Altstadt besuchen.
-    Bitte bringe genügend Bargeld mit, man kann in fast keiner der Tübinger Bars mit EC-Karte zahlen! -- Volksbanken und Sparkassen finden sich bei Bedarf in der Stadt. \\
-    \textbf{Anmeldung} ist hier Pflicht - nur dann erhältst du per Mail passend den Treffpunkt deiner Gruppe mitgeteilt.
-  },
-  body-en = {
-    Tübingen is a town full of small pubs and bars that characterize the nightlife.
-    To calm down from the stress of this information-filled day, we'd like to invite you to go bar-hopping with us.
-    We'll divide up into small groups and visit the different bars in the historic town center.
-    Please bring enough cash, most places we will visit don't accept cards. \\
-    Registration is mandatory here -- only then will you receive the meeting point of your group via email.
-  }
-}
-
 % Wanderung 2
 \DeclareTermin{
+  date = {2026-04-19 10:30:00},
   title-de = {Wanderung 2},                 title-en = {Hike 2},
   date-de = {Sonntag, 19. April \YEAR},     date-en = {Sunday, April 19th \YEAR},
   time-de = {10:30 Uhr},                    time-en = {10:30},
@@ -318,8 +339,30 @@
   }
 }
 
+% Kneipentour
+\DeclareTermin{
+  date = {2026-04-17 00:00:00},
+  title-de = {Kneipentour},                   title-en = {Pub Crawl},
+  date-de = {Freitag, 17. April \YEAR},       date-en = {Friday, April 17th \YEAR},
+  body-de = {
+    Tübingen ist übersät mit kleinen Kneipen und Bars, die das Nachtleben maßgeblich bestimmen.
+    Um den Stress der ersten Veranstaltungen etwas sacken zu lassen, laden wir dich zu einer ausgiebigen Kneipentour ein,
+    bei der wir in Kleingruppen die verschiedenen Lokalitäten der Tübinger Altstadt besuchen.
+    Bitte bringe genügend Bargeld mit, man kann in fast keiner der Tübinger Bars mit EC-Karte zahlen! -- Volksbanken und Sparkassen finden sich bei Bedarf in der Stadt. \\
+    \textbf{Anmeldung} ist hier Pflicht - nur dann erhältst du per Mail passend den Treffpunkt deiner Gruppe mitgeteilt.
+  },
+  body-en = {
+    Tübingen is a town full of small pubs and bars that characterize the nightlife.
+    To calm down from the stress of this information-filled day, we'd like to invite you to go bar-hopping with us.
+    We'll divide up into small groups and visit the different bars in the historic town center.
+    Please bring enough cash, most places we will visit don't accept cards. \\
+    Registration is mandatory here -- only then will you receive the meeting point of your group via email.
+  }
+}
+
 % Clubhausfest
 \DeclareTermin{
+  date = {2026-04-30 21:00:00},
   title-de = {Clubhausfest},                  title-en = {Clubhausfest},
   date-de = {Donnerstag, 30. April \YEAR},    date-en = {Thursday, April 30th \YEAR},
   time-de = {21:00 Uhr},                      time-en = {21:00},
@@ -340,9 +383,10 @@
   }
 }
 
-% Schnuppersitzung, TODO: Datum und Uhrzeit
+% Schnuppersitzung
 \ifkogwiss
   \DeclareTermin{
+    date = {2026-11-20 18:30:00},
     title-de = {Schnuppersitzung der fsk},
     date-de = {Donnerstag, 20. November \YEAR},
     time-de = {18:30 Uhr},
@@ -360,6 +404,7 @@
   }
 \else
   \DeclareTermin{
+    date = {2026-05-07 18:30:00},
     title-de = {Schnuppersitzung der \textit{fsi}},
     date-de = {Donnerstag, 7. Mai \YEAR},
     time-de = {18:30 Uhr},

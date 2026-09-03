@@ -138,6 +138,7 @@ Ein Termin wird innerhalb dieser Bedingungen so definiert:
 
 ```latex
 \DeclareTermin{
+  date = {2026-03-31 18:30:00},
   title-de = {Grillen 1},
   title-en = {BBQ 1},
   date-de = {Dienstag, 31. März \YEAR},
@@ -151,10 +152,11 @@ Ein Termin wird innerhalb dieser Bedingungen so definiert:
 }
 ```
 
-`date`, `time` und `location` können in beiden Sprachen weggelassen werden.
-Alle englischen Felder sind optional und nutzen die deutschen als Fallback.
-`\PrintTermineDe` und `\PrintTermineEn` geben dieselben Termine in
-der jeweiligen Sprache aus.
+`date` wird im Format `YYYY-MM-DD hh:mm:ss` angegeben, wird aber nur zur Sortierung 
+genutzt, `date-de` bzw. `date-en` werden ausgegeben. 
+Die Felder `date-de`, `time-de` und `location-de` können weggelassen werden. 
+Alle englischen Felder sind optional und nutzen die deutschen als Fallback. `\PrintTermineDe` und
+`\PrintTermineEn` geben dieselben Termine in der jeweiligen Sprache aus.
 
 ## Private Subversion history
 

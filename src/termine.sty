@@ -13,9 +13,11 @@
 
 \seq_new:N \g__anf_termine_seq
 \prop_new:N \l__anf_termin_prop
+\msg_new:nnn { anf / termin } { missing-date } { 'date'~field~is~missing.~You~need~a~sort~key! }
 
 \keys_define:nn { anf / termin }
   {
+    date        .code:n = \prop_put:Nnn \l__anf_termin_prop { date } {#1},
     title-de    .code:n = \prop_put:Nnn \l__anf_termin_prop { title-de } {#1},
     title-en    .code:n = \prop_put:Nnn \l__anf_termin_prop { title-en } {#1},
     date-de     .code:n = \prop_put:Nnn \l__anf_termin_prop { date-de } {#1},
@@ -46,13 +48,18 @@
       { ,~\__anf_termin_value:nn { location } {#1} }
   }
 
-\cs_new_protected:Npn \__anf_termin_render:nn #1#2
+\cs_new_protected:Npn \__anf_termin_prop_set:n #1
   {
     \prop_clear:N \l__anf_termin_prop
     \prop_put:Nnn \l__anf_termin_prop { date-de } { }
     \prop_put:Nnn \l__anf_termin_prop { time-de } { }
     \prop_put:Nnn \l__anf_termin_prop { location-de } { }
-    \keys_set:nn { anf / termin } {#2}
+    \keys_set:nn { anf / termin } {#1}
+  }
+
+\cs_new_protected:Npn \__anf_termin_render:nn #1#2
+  {
+    \__anf_termin_prop_set:n {#2}
 
     % eigentliches Layouting
     \par\penalty0\smallskip
@@ -67,13 +74,41 @@
 
 \NewDocumentCommand \DeclareTermin { +m }
   {
-    \seq_gput_right:Nn \g__anf_termine_seq {#1}
+    \__anf_termin_prop_set:n {#1}
+    \prop_get:NnNTF \l__anf_termin_prop { date } \l_tmpa_tl
+      {
+        \seq_gput_right:Nx \g__anf_termine_seq
+          {
+            { \exp_not:V \l_tmpa_tl }
+            { \exp_not:n {#1} }
+          }
+      }
+      { \msg_error:nn { anf / termin } { missing-date } }
+  }
+
+\cs_new_protected:Npn \__anf_termine_sort:
+  {
+    \seq_sort:Nn \g__anf_termine_seq
+      {
+        \str_compare:nNnTF
+          { \tl_item:nn {##1} {1} }
+          >
+          { \tl_item:nn {##2} {1} }
+          { \sort_return_swapped: }
+          { \sort_return_same: }
+      }
+  }
+
+\cs_new_protected:Npn \__anf_termin_render_record:nnn #1#2#3
+  {
+    \__anf_termin_render:nn {#1} {#3}
   }
 
 \cs_new_protected:Npn \__anf_termine_print:n #1
   {
+    \__anf_termine_sort:
     \seq_map_inline:Nn \g__anf_termine_seq
-      { \__anf_termin_render:nn {#1} {##1} }
+      { \__anf_termin_render_record:nnn {#1} ##1 }
   }
 
 \NewDocumentCommand \PrintTermineDe { }
