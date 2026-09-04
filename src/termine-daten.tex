@@ -1,6 +1,6 @@
 % Zentrale Terminverwaltung
 % ASCII-Art generiert mit: https://patorjk.com/software/taag
-% Der erste Eintrag in 'date' wird als Sortierschlüssel genutzt; alle Einträge erscheinen im Kalender.
+% Der erste Eintrag in 'date' wird als Sortierschlüssel genutzt.
 % Die Reihenfolge in diesem File ist also völlig egal.
 
 %  __     __         _                        
@@ -21,6 +21,7 @@
         2026-10-08 09:00:00,
         2026-10-09 09:00:00
       },
+      icon = {faCalculator},
       title-de = {Mathevorkurs-Master},
       date-de = {\kogniMasterMatheVorkursBeginn~bis \kogniMasterMatheVorkursEnde~\YEAR},
       time-de = {09:00--17:00 Uhr},
@@ -41,6 +42,7 @@
   \ifbinfo
     \DeclareTermin{
       date = {2026-09-28 00:00:00},
+      icon = {faLaptopCode},
       title-de = {Informatikvorkurs},
       date-de = {ab \bioinfoDatum~\YEAR},
       body-de = {
@@ -70,6 +72,7 @@
                   2026-10-06 00:00:00,
                   2026-10-07 00:00:00,
                   2026-10-08 00:00:00},
+          icon = {faCalculator},
           title-de = {Mathevorkurs},
           date-de = {ab \mathedatum~\YEAR},
           body-de = {
@@ -94,6 +97,7 @@
                   2026-10-06 00:00:00,
                   2026-10-07 00:00:00,
                   2026-10-08 00:00:00},
+    icon = {faCalculator},
     title-de = {Mathevorkurs},
     date-de = {ab \mathedatum~\YEAR},
     body-de = {
@@ -119,6 +123,7 @@
 \ifmaster
   \DeclareTermin{
     date = {2026-10-08 14:30:00},
+    icon = {faCoffee},
     title-de = {Mastercafé},                  title-en = {Mastercafé},
     date-de = {Donnerstag, 08. Oktober \YEAR},   date-en = {Thursday, October 8th \YEAR},
     time-de = {14:30 Uhr},                    time-en = {14:30},
@@ -140,6 +145,7 @@
 % Facheinführung
 \DeclareTermin{
   date = {2026-10-01 12:00:00},
+  icon = {faInfo},
   title-de = {Facheinführung},  title-en = {Subject Introduction},
   body-de = {
     Fächerspezifische Einführungsveranstaltung, in der du wichtige Informationen zum Studienverlauf erhältst. Den Termin für dein Fach findest du am besten auf \url{https://uni-tuebingen.de/de/197597}.
@@ -154,6 +160,7 @@
 % Semestereroeffnung
 \DeclareTermin{
   date = {2026-10-09 16:00:00},
+  icon = {faUniversity},
   title-de = {Semestereröffnung},   title-en = {Semester Opening},
   date-de = {Freitag, 09. Oktober \YEAR},       date-en = {Friday, October 8th \YEAR},
   time-de = {16:00 Uhr},                        time-en = {16:00},
@@ -182,6 +189,7 @@
 \ifbachelor
   \DeclareTermin{
     date = {2026-10-12 08:00:00},
+    icon = {faChalkboardTeacher},
     title-de = {Erste Vorlesung},
     date-de = {Montag, 12. Oktober \YEAR},
     time-de = {\ifwintersemester 8:00 Uhr\else 10:00 Uhr\fi},
@@ -208,6 +216,7 @@
 % Fruehstueck
 \DeclareTermin{
   date = {2026-10-09 10:00:00},
+  icon = {faBreadSlice},
   title-de = {Frühstück},               title-en = {Breakfast},
   date-de = {Freitag, 09. Oktober \YEAR}, date-en = {Friday, October 9th \YEAR},
   time-de = {10:00 Uhr},                time-en = {10:00},
@@ -233,6 +242,7 @@
 % Grillen 1
 \DeclareTermin{
   date = {2026-10-09 18:00:00},
+  icon = {faFire},
   title-de = {Grillen 1},                 title-en = {BBQ 1},
   date-de = {Freitag, 09. Oktober \YEAR},   date-en = {Friday, October 9th \YEAR},
   time-de = {18:00 Uhr},                  time-en = {18:00},
@@ -254,6 +264,7 @@
 % Grillen 2
 \DeclareTermin{
   date = {2026-10-24 15:00:00},
+  icon = {faFire},
   title-de = {Grillen 2},                 title-en = {BBQ 2},
   date-de = {Samstag, 24. Oktober \YEAR},   date-en = {Saturday, October 24th \YEAR},
   time-de = {15:00 Uhr},                  time-en = {15:00},
@@ -275,6 +286,7 @@
 % Spieleabend 1
 \DeclareTermin{
   date = {2026-10-01 00:00:00},
+  icon = {faDice},
   title-de = {Spieleabend 1},             title-en = {Board Game Night 1},
   date-de = {Donnerstag, 1. Oktober \YEAR},   date-en = {Thursday, October 1st \YEAR},
   location-de = {Sand},                   location-en = {Sand},
@@ -295,6 +307,7 @@
 % Spieleabend 2
 \DeclareTermin{
   date = {2026-10-20 00:00:00},
+  icon = {faDice},
   title-de = {Spieleabend 2},               title-en = {Board Game Night 2},
   date-de = {Dienstag, 20. Oktober \YEAR},    date-en = {Tuesday, October 20th \YEAR},
   location-de = {Sand},                     location-en = {Sand},
@@ -315,6 +328,7 @@
 % Wanderung 1
 \DeclareTermin{
   date = {2026-10-03 10:30:00},
+  icon = {faHiking},
   title-de = {Wanderung 1},                 title-en = {Hike 1},
   date-de = {Samstag, 03. Oktober \YEAR},     date-en = {Saturday, October 3rd \YEAR},
   time-de = {10:30 Uhr},                    time-en = {10:30},
@@ -336,6 +350,7 @@
 % Wanderung 2
 \DeclareTermin{
   date = {2026-10-31 10:30:00},
+  icon = {faHiking},
   title-de = {Wanderung 2},                 title-en = {Hike 2},
   date-de = {Samstag, 31. Oktober \YEAR},     date-en = {Sunday, October 31th \YEAR},
   time-de = {10:30 Uhr},                    time-en = {10:30},
@@ -358,6 +373,7 @@
 % Kneipentour 1
 \DeclareTermin{
   date = {2026-10-08 00:00:00},
+  icon = {faBeer},
   title-de = {Kneipentour 1},                   title-en = {Pub Crawl 1},
   date-de = {Donnerstag, 08. Oktober \YEAR},       date-en = {Thursday, October 8th \YEAR},
   body-de = {
@@ -379,6 +395,7 @@
 % Kneipentour 2
 \DeclareTermin{
   date = {2026-10-17 00:00:00},
+  icon = {faBeer},
   title-de = {Kneipentour 2},                   title-en = {Pub Crawl 2},
   date-de = {Samstag, 17. Oktober \YEAR},       date-en = {Samstag, October 17th \YEAR},
   body-de = {
@@ -400,24 +417,29 @@
 % Flunkyball 
 \DeclareTermin{
   date = {2026-10-07 00:00:00},
+  icon = {faFutbol},
   title-de = {Flunkyball},                   title-en = {Flunkyball},
+  location-de = {Sand},                     location-en = {Sand},
   date-de = {Mittwoch, 07. Oktober \YEAR},       date-en = {Wednesday, October 7th \YEAR},
   body-de = {
     Wir laden euch herzlich ein, eure linken Füße und eure Zielgenauigkeit beim Flunky Ball zu testen. 
     Egal, ob ihr bereits Flunky Ball Profis seid oder es zum ersten Mal ausprobiert. Wir sorgen für die Flunky Ball Ausrüstung und eine tolle Atmosphäre, 
-    ihr müsst nur euch selbst mitbringen. Damit wir alles bestens vorbereiten können, freuen wir uns, wenn ihr euch vorab anmeldet.
+    ihr müsst nur euch selbst mitbringen. Damit wir alles bestens vorbereiten können, freuen wir uns, wenn ihr euch vorab anmeldet.\\
+    \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
   },
   body-en = {
     We like to invite you to test your left feet and your accuracy in Flunky Ball. Whether you're already Flunky Ball 
     pros or trying it for the first time, you're all welcome. We provide the Flunky Ball equipment and a fantastic 
     atmosphere - all you need to bring is yourselves. To ensure everything is well-prepared, we'd appreciate it if you 
-    could register in advance.
+    could register in advance.\\
+    \seticon{faBus}~\textbf{bus stop:} Sand Drosselweg (bus lines 2 \& 6)
   }
 }
 
 % Clubhausfest
 \DeclareTermin{
   date = {2026-10-29 21:00:00},
+  icon = {faMusic},
   title-de = {Clubhausfest},                  title-en = {Clubhausfest},
   date-de = {Donnerstag, 29. Oktober \YEAR},  date-en = {Thursday, October 29th \YEAR},
   time-de = {21:00 Uhr},                      time-en = {21:00},
@@ -442,6 +464,7 @@
 \ifkogwiss
   \DeclareTermin{
     date = {2026-11-20 18:30:00},
+    icon = {faUsers},
     title-de = {Schnuppersitzung der fsk},
     date-de = {Donnerstag, 20. November \YEAR},
     time-de = {18:30 Uhr},
@@ -458,20 +481,24 @@
     }
   }
 \else
-  \DeclareTermin{
-    date = {2026-11-04 18:30:00},
-    title-de = {Schnuppersitzung der \textit{fsi}},
-    date-de = {Donnerstag, 4. November \YEAR},
-    time-de = {18:30 Uhr},
-    location-de = {Sand},
-    body-de = {
-      Hoffentlich konnten wir mit unseren Veranstaltungen euer Interesse an Fachschaftsarbeit wecken.
-      Wir machen aber noch viel mehr als nur Ersti-Veranstaltungen, wir vertreten die Studenten in Gremien,
-      sind Ansprechpartner, stellen Infrastruktur und Tools bereit und vieles mehr.
-      Komm doch einfach mal zu unserer Schnuppersitzung\footnote{Natürlich freuen wir uns auch sehr, wenn du sogar schon vor der Schnuppersitzung zu regulären Sitzungen kommst :)}
-      und schau ob es dir gefällt!\\
-      Keine Anmeldung nötig.\\
-      \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
+  \ifml
+  \else
+    \DeclareTermin{
+      date = {2026-11-04 18:30:00},
+      icon = {faUsers},
+      title-de = {Schnuppersitzung der \textit{fsi}},
+      date-de = {Donnerstag, 4. November \YEAR},
+      time-de = {18:30 Uhr},
+      location-de = {Sand},
+      body-de = {
+        Hoffentlich konnten wir mit unseren Veranstaltungen euer Interesse an Fachschaftsarbeit wecken.
+        Wir machen aber noch viel mehr als nur Ersti-Veranstaltungen, wir vertreten die Studenten in Gremien,
+        sind Ansprechpartner, stellen Infrastruktur und Tools bereit und vieles mehr.
+        Komm doch einfach mal zu unserer Schnuppersitzung\footnote{Natürlich freuen wir uns auch sehr, wenn du sogar schon vor der Schnuppersitzung zu regulären Sitzungen kommst :)}
+        und schau ob es dir gefällt!\\
+        Bitte auch hier über's EEI anmelden - es gibt Essen!\\
+        \seticon{faBus}~\textbf{Bushaltestelle:} Sand Drosselweg (Linien 2 \& 6)
+      }
     }
-  }
+  \fi
 \fi

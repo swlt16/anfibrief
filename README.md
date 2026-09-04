@@ -139,6 +139,7 @@ Ein Termin wird innerhalb dieser Bedingungen so definiert:
 ```latex
 \DeclareTermin{
   date = {2026-03-31 18:30:00},
+  icon = {faFire},
   title-de = {Grillen 1},
   title-en = {BBQ 1},
   date-de = {Dienstag, 31. März \YEAR},
@@ -154,7 +155,9 @@ Ein Termin wird innerhalb dieser Bedingungen so definiert:
 
 `date` wird als einzelner Zeitstempel im Format `YYYY-MM-DD hh:mm:ss` oder als
 kommaseparierte Liste solcher Zeitstempel angegeben. Der erste Eintrag bestimmt die
-Sortierung; im Monatskalender erscheint der Termin an jedem angegebenen Datum.
+Sortierung.
+`icon` enthält den Namen eines Icons aus dem Paket `fontawesome5`, beispielsweise
+`faFire`, `faDice` oder `faHiking`.
 `date-de` bzw. `date-en` werden in der Terminliste ausgegeben.
 Die Felder `date-de`, `time-de` und `location-de` können weggelassen werden. 
 Alle englischen Felder sind optional und nutzen die deutschen als Fallback. `\PrintTermineDe` und
