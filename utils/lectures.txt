@@ -1,0 +1,7 @@
+INF1010     # Mathe 1
+INFM1110    # Prak. Inf. 1
+INFM1310    # Tech. Inf. 1
+BCH-600     # Biochemie
+INFL01      # Fachdidaktik
+Bio-TPH-V   # Tierphysio
+KOG         # Comp. Statistik

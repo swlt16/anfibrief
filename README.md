@@ -105,6 +105,43 @@ Die Briefe der einzelnen Studiengänge setzen sich zusammen aus:
   Briefe gehängt. Den Stadtplan nur mit Inkscape bearbeiten, Illustrator o.ä.
   sorgen für seltsame Fehler im Makefile.
 
+## Veranstaltungen in ALMA suchen
+
+Das Skript `utils/search_alma.py` fragt die öffentliche Veranstaltungssuche in
+ALMA ab. Es benötigt nur Python 3 und keine zusätzlichen Pakete:
+
+```sh
+python3 utils/search_alma.py INFM1110
+python3 utils/search_alma.py INFM1110 --semester "Wintersemester 2026" --json
+python3 utils/search_alma.py -f modulnummern.txt
+python3 utils/search_alma.py -f modulnummern.txt --all
+```
+
+Bei `-f` enthält die Datei einen Suchbegriff beziehungsweise eine Modulnummer
+pro Zeile. Alles ab `#` bis zum Zeilenende gilt als Kommentar; Leer- und reine
+Kommentarzeilen werden ignoriert. Die Treffer aller Zeilen werden gemeinsam
+ausgegeben. Das Semester steht oberhalb der Tabelle. Die Tabellenansicht
+enthält Nummer, Veranstaltungsart, gekürzten Titel und Dozent/-in; die
+JSON-Ausgabe enthält zusätzlich alle ungekürzten Daten. Standardmäßig werden
+nur Vorlesungen ausgegeben; `--all` zeigt auch Übungen und andere
+Veranstaltungsarten an.
+
+```text
+# Veranstaltungen des ersten Semesters
+INFM1110  # Praktische Informatik 1
+INFM1210  # Technische Informatik 1
+```
+
+Für die Verwendung aus Python steht `AlmaClient` in `utils/alma.py` bereit:
+
+```python
+from utils.alma import AlmaClient
+
+courses = AlmaClient().search("INFM1110")
+for course in courses:
+    print(course.number, course.title, course.semester, course.detail_url)
+```
+
 ## If-Else-Trickserei
 An vielen Stellen, vor allem bei den Terminen, können unterschiedliche Texte notwendig sein, da z.B. Anfangszeiten unterschiedlich sind oder der Text auf Englisch verfasst werden muss. Wir haben dazu für Winter- und Sommersemester sowie jeden Studiengang eine if-Konstruktion eingebaut, mit der sich die Dokumente entsprechend verzweigen lassen:
 
