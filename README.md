@@ -49,9 +49,10 @@ folgenden Dinge erledigt werden:
     - Informatik Vorkurs für BioInfos bei Philipp Thiel (Wann, Anmeldeschluss)
 
 1. Termine updaten
-    - Hierzu müsst ihr die Datei termine.tex öffnen und entsprechend editieren.
-      Termine der Fachschaft Psychologie werden mit `\ifkogwiss .. \fi`
-      umschlossen.
+    - Hierzu müsst ihr die Datei `src/termine-daten.tex` öffnen und die
+      `\DeclareTermin{...}`-Blöcke entsprechend editieren.
+      Termine der Fachschaft Psychologie werden mit
+      `\ifkogwiss .. \fi` umschlossen.
     - Es gibt desweiteren noch das Flag `\ifmaster ... \fi`, mit dem man Termine
       nur für alle Masterstudiengänge gültig machen kann.
 
@@ -77,8 +78,9 @@ Die Briefe der einzelnen Studiengänge setzen sich zusammen aus:
 - `src/config.tex`, hier werden grundsätzliche Infos die in jedem Brief
   vorkommen gesetzt, z.B. Info- und Mathe-Profs sowie der Preis des
   Semestertickets, Anmeldeschluss für Vorkurse
-- `src/brief_main.tex`, hier wird das Hauptdokument definert und die einzelnen
+- `src/brief_main.tex`, hier wird das Hauptdokument definiert und die einzelnen
   Abschnitte werden eingebunden.
+- `src/termine-daten.tex` enthält die Termindaten. `src/termine.sty` ist eine Hilfsklasse; `src/termine.tex` enthält nur die Hinweisbox und stößt das Rendering an.
 - `src/brief_init.tex`, hier werden die `if`-Statements für die einzelnen Briefe
   definiert und auf false gesetzt. **Diese Datei nicht verändern!** (Es sei
   denn, ihr legt einen neuen Studiengang an.)
@@ -90,7 +92,7 @@ Die Briefe der einzelnen Studiengänge setzen sich zusammen aus:
 
 |Überschrift|Datei|
 |-----------|-----|
-|"Dein Terminkalender für die ersten Tage"|`src/termine.tex`|
+|"Dein Terminkalender für die ersten Tage"|`src/termine-daten.tex`|
 |"Das erwartet dich im Studium"|`stundenplaene/stpl_<studiengang>.tex`|
 |"Die Anfangszeiten und Orte"|`src/misc.tex`|
 |"Die Informatik-Vorlesung"|`src/misc.tex`|
@@ -131,6 +133,35 @@ Benutzung wie folgt:
 \fi
 ```
 Ganz wichtig: **Alle** ifs immer mit `\fi` schließen, sonst fliegt euch das Dokument um die Ohren.
+
+Ein Termin wird innerhalb dieser Bedingungen so definiert:
+
+```latex
+\DeclareTermin{
+  date = {2026-03-31 18:30:00},
+  icon = {faFire},
+  title-de = {Grillen 1},
+  title-en = {BBQ 1},
+  date-de = {Dienstag, 31. März \YEAR},
+  date-en = {Tuesday, March 31st \YEAR},
+  time-de = {18:30 Uhr},
+  time-en = {18:30},
+  location-de = {im Garten des Sandes},
+  location-en = {in the garden of the Sand},
+  body-de = {Deutsche Beschreibung des Termins.},
+  body-en = {English description of the event.}
+}
+```
+
+`date` wird als einzelner Zeitstempel im Format `YYYY-MM-DD hh:mm:ss` oder als
+kommaseparierte Liste solcher Zeitstempel angegeben. Der erste Eintrag bestimmt die
+Sortierung.
+`icon` enthält den Namen eines Icons aus dem Paket `fontawesome5`, beispielsweise
+`faFire`, `faDice` oder `faHiking`.
+`date-de` bzw. `date-en` werden in der Terminliste ausgegeben.
+Die Felder `date-de`, `time-de` und `location-de` können weggelassen werden. 
+Alle englischen Felder sind optional und nutzen die deutschen als Fallback. `\PrintTermineDe` und
+`\PrintTermineEn` geben dieselben Termine in der jeweiligen Sprache aus.
 
 ## Private Subversion history
 

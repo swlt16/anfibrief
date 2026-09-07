@@ -1,0 +1,265 @@
+% Custom Package für Terminverwaltung im Erstibrief
+% damit man nicht immer manuelles Layouting machen muss und ständig die Übersicht in der
+% ver...ickten Termindatei verliert. Das ist echt verdammt nervig.
+% Für FSI-Historiker: Haben wir im WiSe26/27 geändert.
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{src/termine}[2026/09/03 Anfi-Termine]
+
+\RequirePackage{expl3}
+\RequirePackage{xparse}
+\RequirePackage{fontawesome5}
+\RequirePackage{refcount}
+\RequirePackage{tikz}
+\RequirePackage{xcolor}
+
+\ExplSyntaxOn
+
+\seq_new:N \g__anf_termine_seq
+\prop_new:N \l__anf_termin_prop
+\clist_new:N \l__anf_termin_dates_clist
+\tl_new:N \l__anf_termin_timeline_date_tl
+\int_new:N \l__anf_termin_index_int
+\int_new:N \l__anf_termin_count_int
+\dim_const:Nn \c__anf_termin_timeline_indent_dim { 2.25cm }
+\dim_const:Nn \c__anf_termin_body_indent_dim { 1.5mm }
+\msg_new:nnn { anf / termin } { missing-date } { 'date'~field~is~missing.~You~need~a~sort~key! }
+
+\keys_define:nn { anf / termin }
+  {
+    date        .code:n = \prop_put:Nnn \l__anf_termin_prop { date } {#1},
+    icon        .code:n = \prop_put:Nnn \l__anf_termin_prop { icon } {#1},
+    title-de    .code:n = \prop_put:Nnn \l__anf_termin_prop { title-de } {#1},
+    title-en    .code:n = \prop_put:Nnn \l__anf_termin_prop { title-en } {#1},
+    date-de     .code:n = \prop_put:Nnn \l__anf_termin_prop { date-de } {#1},
+    date-en     .code:n = \prop_put:Nnn \l__anf_termin_prop { date-en } {#1},
+    time-de     .code:n = \prop_put:Nnn \l__anf_termin_prop { time-de } {#1},
+    time-en     .code:n = \prop_put:Nnn \l__anf_termin_prop { time-en } {#1},
+    location-de .code:n = \prop_put:Nnn \l__anf_termin_prop { location-de } {#1},
+    location-en .code:n = \prop_put:Nnn \l__anf_termin_prop { location-en } {#1},
+    body-de     .code:n = \prop_put:Nnn \l__anf_termin_prop { body-de } {#1},
+    body-en     .code:n = \prop_put:Nnn \l__anf_termin_prop { body-en } {#1},
+  }
+
+\cs_new:Npn \__anf_termin_value:nn #1#2
+  {
+    \prop_if_in:NnTF \l__anf_termin_prop { #1-#2 }
+      { \prop_item:Nn \l__anf_termin_prop { #1-#2 } }
+      { \prop_item:Nn \l__anf_termin_prop { #1-de } }
+  }
+
+\cs_new_protected:Npn \__anf_termin_label:n #1
+  {
+    \__anf_termin_value:nn { title } {#1}
+    \tl_if_blank:eF { \__anf_termin_value:nn { date } {#1} }
+      { ~--~\__anf_termin_value:nn { date } {#1} }
+    \tl_if_blank:eF { \__anf_termin_value:nn { time } {#1} }
+      { ,~\__anf_termin_value:nn { time } {#1} }
+    \tl_if_blank:eF { \__anf_termin_value:nn { location } {#1} }
+      { ,~\__anf_termin_value:nn { location } {#1} }
+  }
+
+\cs_new_protected:Npn \__anf_termin_prop_set:n #1
+  {
+    \prop_clear:N \l__anf_termin_prop
+    \prop_put:Nnn \l__anf_termin_prop { icon } { faCalendarDay }
+    \prop_put:Nnn \l__anf_termin_prop { date-de } { }
+    \prop_put:Nnn \l__anf_termin_prop { time-de } { }
+    \prop_put:Nnn \l__anf_termin_prop { location-de } { }
+    \keys_set:nn { anf / termin } {#1}
+  }
+
+\cs_new_protected:Npn \__anf_termin_timeline_date_from_timestamp:w
+  #1-#2-#3~#4 \q_stop
+  { \tl_set:Nn \l__anf_termin_timeline_date_tl { #3.#2. } }
+
+\cs_new_protected:Npn \__anf_termin_timeline_date_set:
+  {
+    \prop_get:NnN \l__anf_termin_prop { date } \l_tmpa_tl
+    \clist_set:NV \l__anf_termin_dates_clist \l_tmpa_tl
+    \tl_set:Nx \l_tmpa_tl
+      { \clist_item:Nn \l__anf_termin_dates_clist {1} }
+    \exp_after:wN
+      \__anf_termin_timeline_date_from_timestamp:w
+      \l_tmpa_tl \q_stop
+  }
+
+\cs_new:Npn \__anf_termin_page:n #1
+  { \getpagerefnumber { anf-termin-page-#1 } }
+
+\cs_new:Npn \__anf_termin_text_bottom_shift:
+  {
+    \dim_eval:n
+      {
+        -1in - \voffset - \topmargin - \headheight - \headsep
+        - \pagegoal
+      }
+  }
+
+\cs_new_protected:Npn \__anf_termin_timeline_marker:
+  {
+    \label{anf-termin-page-\int_use:N \l__anf_termin_index_int}
+    \prop_get:NnN \l__anf_termin_prop { icon } \l_tmpa_tl
+    \llap
+      {
+        \makebox[\c__anf_termin_timeline_indent_dim][r]
+          {
+            \textcolor{anfibriefaccent}
+              { \scriptsize\bfseries \l__anf_termin_timeline_date_tl }
+            \hspace{0.4em}
+            \smash
+              {
+                \tikz[remember~picture,baseline=-0.7ex]
+                  {
+                    \node
+                      [
+                        circle,
+                        fill=anfibriefaccent,
+                        draw=anfibriefaccent,
+                        minimum~size=28pt,
+                        inner~sep=0pt,
+                        text=white,
+                        font=\fontsize{12}{12}\selectfont
+                      ]
+                      (anf-termin-dot-\int_use:N \l__anf_termin_index_int)
+                      { \use:c { \l_tmpa_tl } };
+                    \int_compare:nNnT { \l__anf_termin_index_int } > {1}
+                      {
+                        \draw
+                          [overlay,draw=anfibriefaccent,line~width=0.8pt]
+                          (anf-termin-dot-\int_use:N \l__anf_termin_index_int.north)
+                          -- ++(0,2em);
+                      }
+                  }
+              }
+            \hspace{0.45em}
+          }
+      }
+  }
+
+\cs_new_protected:Npn \__anf_termin_timeline_finish:
+  {
+    \tikz[remember~picture,overlay,baseline=0pt]
+      {
+        \coordinate
+          (anf-termin-end-\int_use:N \l__anf_termin_index_int);
+        \int_compare:nNnT
+          { \l__anf_termin_index_int }
+          <
+          { \l__anf_termin_count_int }
+          {
+            \int_compare:nNnTF
+              {
+                \__anf_termin_page:n
+                  { \int_use:N \l__anf_termin_index_int }
+              }
+              =
+              {
+                \__anf_termin_page:n
+                  { \int_eval:n { \l__anf_termin_index_int + 1 } }
+              }
+              {
+                \coordinate
+                  (anf-termin-line-end-\int_use:N \l__anf_termin_index_int)
+                  at
+                  ([yshift=-2em]
+                    anf-termin-end-\int_use:N \l__anf_termin_index_int);
+              }
+              {
+                \coordinate
+                  (anf-termin-line-end-\int_use:N \l__anf_termin_index_int)
+                  at
+                  ([yshift=\__anf_termin_text_bottom_shift:]
+                    current~page.north);
+              }
+            \draw[draw=anfibriefaccent,line~width=0.8pt]
+              (anf-termin-dot-\int_use:N \l__anf_termin_index_int.south)
+              --
+              (anf-termin-dot-\int_use:N \l__anf_termin_index_int.south
+                |- anf-termin-line-end-\int_use:N \l__anf_termin_index_int);
+          }
+      }
+  }
+
+\cs_new_protected:Npn \__anf_termin_render:nn #1#2
+  {
+    \__anf_termin_prop_set:n {#2}
+    \__anf_termin_timeline_date_set:
+
+    % eigentliches Layouting
+    \par\penalty0\smallskip
+    \int_compare:nNnT { \l__anf_termin_index_int } = {1}
+      { \vspace{0.5em} }
+    \begin{samepage}
+      \group_begin:
+        \leftskip=\c__anf_termin_timeline_indent_dim
+        \noindent
+        \__anf_termin_timeline_marker:
+        \textbf{\__anf_termin_label:n {#1}}\par\nobreak
+        \group_begin:
+          \leftskip=\dim_eval:n
+            { \c__anf_termin_timeline_indent_dim + \c__anf_termin_body_indent_dim }
+          \noindent\ignorespaces
+          \__anf_termin_value:nn { body } {#1}
+          \__anf_termin_timeline_finish:
+          \par
+        \group_end:
+      \group_end:
+    \end{samepage}
+  }
+
+\NewDocumentCommand \DeclareTermin { +m }
+  {
+    \__anf_termin_prop_set:n {#1}
+    \prop_get:NnNTF \l__anf_termin_prop { date } \l_tmpa_tl
+      {
+        \clist_set:NV \l__anf_termin_dates_clist \l_tmpa_tl
+        \tl_set:Nx \l_tmpb_tl
+          { \clist_item:Nn \l__anf_termin_dates_clist {1} }
+        \seq_gput_right:Nx \g__anf_termine_seq
+          {
+            {\exp_not:V \l_tmpb_tl}
+            { \exp_not:n {#1} }
+          }
+      }
+      { \msg_error:nn { anf / termin } { missing-date } }
+  }
+
+\cs_new_protected:Npn \__anf_termine_sort:
+  {
+    \seq_sort:Nn \g__anf_termine_seq
+      {
+        \str_compare:nNnTF
+          { \tl_item:nn {##1} {1} }
+          >
+          { \tl_item:nn {##2} {1} }
+          { \sort_return_swapped: }
+          { \sort_return_same: }
+      }
+  }
+
+\cs_new_protected:Npn \__anf_termin_render_record:nnn #1#2#3
+  {
+    \__anf_termin_render:nn {#1} {#3}
+  }
+
+\cs_new_protected:Npn \__anf_termine_print:n #1
+  {
+    \__anf_termine_sort:
+    \int_zero:N \l__anf_termin_index_int
+    \int_set:Nn \l__anf_termin_count_int
+      { \seq_count:N \g__anf_termine_seq }
+    \seq_map_inline:Nn \g__anf_termine_seq
+      {
+        \int_incr:N \l__anf_termin_index_int
+        \__anf_termin_render_record:nnn {#1} ##1
+      }
+  }
+
+\NewDocumentCommand \PrintTermineDe { }
+  { \__anf_termine_print:n { de } }
+
+\NewDocumentCommand \PrintTermineEn { }
+  { \__anf_termine_print:n { en } }
+
+\ExplSyntaxOff

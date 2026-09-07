@@ -35,8 +35,10 @@
 %\setlength{\oddsidemargin}{\useplength{toaddrhpos}}
 %\addtolength{\oddsidemargin}{-1in}
 \ifkogwiss
+	\colorlet{anfibriefaccent}{green}
 	\newcommand{\seticon}[1]{\textcolor{green}{\csname #1\endcsname}}
 \else
+	\colorlet{anfibriefaccent}{navy}
 	\newcommand{\seticon}[1]{\textcolor{navy}{\csname #1\endcsname}}
 \fi
 
