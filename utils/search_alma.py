@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import List
 
 from alma import AlmaClient, AlmaCourse, AlmaError
+from module_specs import filter_courses, parse_module_spec, read_module_specs
 
 
 def _shorten(value: str, maximum: int = 30) -> str:
@@ -18,15 +19,6 @@ def _shorten(value: str, maximum: int = 30) -> str:
 
 def _lecturer(course: AlmaCourse) -> str:
     return course.responsible_lecturers or course.lecturers
-
-
-def _read_queries(path: Path) -> List[str]:
-    queries = []
-    for line in path.read_text(encoding="utf-8-sig").splitlines():
-        query = line.partition("#")[0].strip()
-        if query:
-            queries.append(query)
-    return queries
 
 
 def _print_table(courses: List[AlmaCourse]) -> None:
@@ -62,13 +54,13 @@ def main() -> int:
     parser.add_argument(
         "query",
         nargs="?",
-        help="z. B. INFM1110, ein Titel oder ein Name",
+        help="Modulnummer, optional mit Typ-Suffix, z. B. INFM1110 oder INFM1110:S",
     )
     parser.add_argument(
         "-f",
         "--file",
         type=Path,
-        help="Datei mit einem Suchbegriff pro Zeile",
+        help="Datei mit einer Modulnummer pro Zeile",
     )
     parser.add_argument(
         "--semester",
@@ -89,7 +81,7 @@ def main() -> int:
 
     try:
         if args.file:
-            queries = _read_queries(args.file)
+            queries = read_module_specs(args.file)
             if not queries:
                 raise ValueError(f"{args.file} enthält keine Suchbegriffe")
         else:
@@ -97,13 +89,16 @@ def main() -> int:
             queries = [args.query]
 
         client = AlmaClient()
-        courses = [
-            course
-            for query in queries
-            for course in client.search(query, semester=args.semester)
-        ]
-        if not args.all:
-            courses = [course for course in courses if course.course_type == "Vorlesung"]
+        courses = []
+        for value in queries:
+            query, requested_type = parse_module_spec(value)
+            query_courses = filter_courses(
+                client.search(query, semester=args.semester),
+                module_number=query,
+                requested_type=requested_type,
+                include_all_types=args.all,
+            )
+            courses.extend(query_courses)
     except (AlmaError, OSError, ValueError) as error:
         parser.exit(1, f"Fehler: {error}\n")
 

@@ -45,6 +45,25 @@ class AlmaCourse:
         return asdict(self)
 
 
+@dataclass(frozen=True)
+class AlmaMeeting:
+    """One scheduled meeting from an ALMA course detail page."""
+
+    rhythm: str
+    weekday: str
+    start_time: str
+    end_time: str
+    start_date: str
+    end_date: str
+    cancelled_dates: str
+    remark: str
+    lecturer: str
+    room: str
+
+    def to_dict(self) -> Dict[str, str]:
+        return asdict(self)
+
+
 @dataclass
 class _SearchForm:
     action: str
@@ -242,6 +261,103 @@ class _ResultParser(HTMLParser):
         )
 
 
+class _MeetingParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.meetings: List[AlmaMeeting] = []
+        self._table_depth = 0
+        self._in_candidate_table = False
+        self._row: Optional[List[_Cell]] = None
+        self._cell: Optional[_Cell] = None
+        self._columns: Optional[Dict[str, int]] = None
+
+    def handle_starttag(self, tag: str, attrs: Sequence[Tuple[str, Optional[str]]]) -> None:
+        attributes = {name: value or "" for name, value in attrs}
+        if tag == "table":
+            self._table_depth += 1
+            classes = attributes.get("class", "").split()
+            if not self._in_candidate_table and "tableWithBorder" in classes:
+                self._in_candidate_table = True
+                self._table_depth = 1
+                self._columns = None
+            return
+        if not self._in_candidate_table or self._table_depth != 1:
+            return
+        if tag == "tr":
+            self._row = []
+        elif tag in ("th", "td") and self._row is not None:
+            self._cell = _Cell(tag=tag, text=[], links=[])
+
+    def handle_data(self, data: str) -> None:
+        if self._cell is not None:
+            self._cell.text.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag == "table":
+            if self._in_candidate_table and self._table_depth == 1:
+                self._in_candidate_table = False
+                self._row = None
+                self._cell = None
+            self._table_depth = max(0, self._table_depth - 1)
+            return
+        if not self._in_candidate_table or self._table_depth != 1:
+            return
+        if tag in ("th", "td") and self._cell is not None and self._row is not None:
+            self._cell.text = [" ".join("".join(self._cell.text).split())]
+            self._row.append(self._cell)
+            self._cell = None
+        elif tag == "tr" and self._row is not None:
+            self._consume_row(self._row)
+            self._row = None
+
+    def _consume_row(self, row: List[_Cell]) -> None:
+        texts = [cell.text[0] if cell.text else "" for cell in row]
+        if row and all(cell.tag == "th" for cell in row):
+            headers = {
+                text.partition(" [")[0].strip(): index
+                for index, text in enumerate(texts)
+            }
+            if (
+                "Rhythmus" in headers
+                and "Wochentag" in headers
+                and "Von - Bis" in headers
+            ):
+                self._columns = headers
+            return
+        if not self._columns:
+            return
+
+        def value(header: str) -> str:
+            index = self._columns.get(header)
+            return texts[index] if index is not None and index < len(texts) else ""
+
+        weekday = value("Wochentag")
+        time_range = value("Von - Bis")
+        if not weekday or not time_range:
+            return
+        start_time, end_time = self._split_range(time_range)
+        start_date, end_date = self._split_range(value("Startdatum - Enddatum"))
+        self.meetings.append(
+            AlmaMeeting(
+                rhythm=value("Rhythmus"),
+                weekday=weekday,
+                start_time=start_time,
+                end_time=end_time,
+                start_date=start_date,
+                end_date=end_date,
+                cancelled_dates=value("Ausfalltermin"),
+                remark=value("Bemerkung"),
+                lecturer=value("Durchführende/-r"),
+                room=value("Raum"),
+            )
+        )
+
+    @staticmethod
+    def _split_range(value: str) -> Tuple[str, str]:
+        start, separator, end = value.partition(" - ")
+        return (start, end) if separator else (value, value)
+
+
 class AlmaClient:
     """Client for the anonymous course search at alma.uni-tuebingen.de."""
 
@@ -262,11 +378,7 @@ class AlmaClient:
         if not query:
             raise ValueError("query must not be empty")
 
-        # Establish an anonymous JSESSIONID before starting the Webflow.  Going
-        # directly to the flow without it currently causes a redirect loop.
-        if not self._session_initialized:
-            self._get(urljoin(self.base_url, "/alma/"))
-            self._session_initialized = True
+        self._ensure_session()
         form_html = self._get(urljoin(self.base_url, FLOW_PATH))
         parser = _SearchFormParser()
         parser.feed(form_html)
@@ -300,6 +412,23 @@ class AlmaClient:
         result_parser = _ResultParser(self.base_url, semester=semester_label)
         result_parser.feed(result_html)
         return result_parser.courses
+
+    def get_meetings(self, course: AlmaCourse) -> List[AlmaMeeting]:
+        """Return all scheduled meetings from a course's ALMA detail page."""
+        if not course.detail_url:
+            raise ValueError("course has no ALMA detail URL")
+        self._ensure_session()
+        detail_html = self._get(course.detail_url)
+        parser = _MeetingParser()
+        parser.feed(detail_html)
+        return parser.meetings
+
+    def _ensure_session(self) -> None:
+        # Establish an anonymous JSESSIONID before starting a Webflow.  Going
+        # directly to a flow without it currently causes a redirect loop.
+        if not self._session_initialized:
+            self._get(urljoin(self.base_url, "/alma/"))
+            self._session_initialized = True
 
     @staticmethod
     def _resolve_semester(semester: str, choices: Sequence[Tuple[str, str]]) -> str:
